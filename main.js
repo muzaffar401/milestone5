@@ -1,3 +1,4 @@
+var _a;
 document.addEventListener('DOMContentLoaded', function () {
     // Add input event listeners to trigger validation automatically
     var nameElement = document.getElementById('name');
@@ -6,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var educationElement = document.getElementById('education');
     var experienceElement = document.getElementById('experience');
     var skillsElement = document.getElementById('skills');
-
     nameElement.addEventListener('input', validateName);
     emailElement.addEventListener('input', validateEmail);
     phoneElement.addEventListener('input', validatePhone);
@@ -14,70 +14,38 @@ document.addEventListener('DOMContentLoaded', function () {
     experienceElement.addEventListener('input', validateExperience);
     skillsElement.addEventListener('input', validateSkills);
 });
-
-document.getElementById('resume_form').addEventListener('submit', function (event) {
+(_a = document.getElementById('resume_form')) === null || _a === void 0 ? void 0 : _a.addEventListener('submit', function (event) {
     event.preventDefault();
-
     // Validate all fields before generating resume
     if (validateAll()) {
-        var name = document.getElementById('name').value;
+        var name_1 = document.getElementById('name').value;
         var email = document.getElementById('email').value;
         var phone = document.getElementById('phone').value;
         var education = document.getElementById('education').value;
         var experience = document.getElementById('experience').value;
         var skills = document.getElementById('skills').value;
-
-        var resumeData = `
-            <h2>RESUME</h2>
-            <h2>Personal Information</h2>
-            <p><strong>Name :</strong> ${name}</p>
-            <p><strong>Email :</strong> ${email}</p>
-            <p><strong>Phone Number :</strong> ${phone}</p>
-            <h2>Education</h2>
-            <p>${education}</p>
-            <h2>Experience</h2>
-            <p>${experience}</p>
-            <h2>Skills</h2>
-            <p>${skills}</p>
-        `;
-
+        var resumeData = "\n        <h2>RESUME</h2>\n        <h2>Personal Information</h2>\n        <p><strong>Name :</strong> ".concat(name_1, "</p>\n        <p><strong>Email :</strong> ").concat(email, "</p>\n        <p><strong>Phone Number :</strong> ").concat(phone, "</p>\n        <h2>Education</h2>\n        <p>").concat(education, "</p>\n        <h2>Experience</h2>\n        <p>").concat(experience, "</p>\n        <h2>Skills</h2>\n        <p>").concat(skills, "</p>\n        ");
         var resumeDataElement = document.getElementById('resume_data');
         if (resumeDataElement) {
             resumeDataElement.innerHTML = resumeData;
+            // Show the resume data again
             resumeDataElement.style.display = 'block';
+            // Add Edit Button
             addEditButton();
-        } else {
+        }
+        else {
             console.error('The Resume Output Elements are Missing!');
         }
-
-        // Generate and display the shareable resume link
-        var username = name.toLowerCase().replace(/\s+/g, '-'); // Sanitize the username
-        var resumeURL = generateResumeURL(username);
-
-        var resumeURLDiv = document.getElementById('resume_url');
-        if (resumeURLDiv) {
-            resumeURLDiv.style.display = 'block';
-            resumeURLDiv.innerHTML = `<a href="${resumeURL}" target="_blank">View Your Resume</a>`;
-        } else {
-            console.error('Resume URL div not found');
-        }
-
         // Reset the form fields
         var formElement = document.getElementById('resume_form');
         if (formElement) {
             formElement.reset();
         }
-    } else {
+    }
+    else {
         console.error('Form validation failed.');
     }
 });
-
-// Function to generate a unique URL for the resume
-function generateResumeURL(username) {
-    var baseURL = window.location.origin; // Automatically captures the current domain
-    return `${baseURL}/resume/${username}`;
-}
-
 // Function to add the "Edit" button dynamically
 function addEditButton() {
     var editButton = document.getElementById('edit_button');
@@ -90,45 +58,52 @@ function addEditButton() {
         var resumeContainer = document.getElementById('resume_data');
         if (resumeContainer) {
             resumeContainer.appendChild(editButton);
-        } else {
+        }
+        else {
             console.error('Resume data not found');
         }
         editButton.addEventListener('click', enableResumeEditing);
     }
 }
-
-// Function to enable editing of the resume
 function enableResumeEditing() {
+    var _a;
     var resumeDataElement = document.getElementById('resume_data');
     if (resumeDataElement) {
         var resumeHtml = resumeDataElement.innerHTML;
+        // Hide the resume data section
         resumeDataElement.style.display = 'none';
-
-        document.getElementById('name').value = extractResumeData('Name', resumeHtml);
-        document.getElementById('email').value = extractResumeData('Email', resumeHtml);
-        document.getElementById('phone').value = extractResumeData('Phone Number', resumeHtml);
-        document.getElementById('education').value = extractResumeData('Education', resumeHtml);
-        document.getElementById('experience').value = extractResumeData('Experience', resumeHtml);
-        document.getElementById('skills').value = extractResumeData('Skills', resumeHtml);
-
-        document.getElementById('resume_form').scrollIntoView({ behavior: 'smooth' });
+        // Extracting data from the resume HTML and setting it back to the form fields
+        var nameElement = document.getElementById('name');
+        var emailElement = document.getElementById('email');
+        var phoneElement = document.getElementById('phone');
+        var educationElement = document.getElementById('education');
+        var experienceElement = document.getElementById('experience');
+        var skillsElement = document.getElementById('skills');
+        // Populating form fields with the extracted resume data
+        nameElement.value = extractResumeData('Name', resumeHtml);
+        emailElement.value = extractResumeData('Email', resumeHtml);
+        phoneElement.value = extractResumeData('Phone Number', resumeHtml);
+        educationElement.value = extractResumeData('Education', resumeHtml);
+        experienceElement.value = extractResumeData('Experience', resumeHtml);
+        skillsElement.value = extractResumeData('Skills', resumeHtml);
+        // Scroll to the form for ease of editing
+        (_a = document.getElementById('resume_form')) === null || _a === void 0 ? void 0 : _a.scrollIntoView({ behavior: 'smooth' });
     }
 }
-
 // Utility function to extract resume data from the HTML string
 function extractResumeData(label, html) {
     var regex;
     if (label === 'Education' || label === 'Experience' || label === 'Skills') {
-        regex = new RegExp(`<h2>${label}</h2>\\s*<p>([^<]+)</p>`);
-    } else {
-        regex = new RegExp(`<p><strong>${label} :</strong>\\s*([^<]+)</p>`);
+        // For fields with only <p> tags without <strong>
+        regex = new RegExp("<h2>".concat(label, "</h2>\\s*<p>([^<]+)</p>"));
+    }
+    else {
+        // For fields with <strong> like Name, Email, and Phone Number
+        regex = new RegExp("<p><strong>".concat(label, "\\s*:\\s*</strong>\\s*([^<]+)</p>"));
     }
     var match = html.match(regex);
     return match ? match[1].trim() : '';
 }
-
-// Form validation functions go here...
-
 // Validation functions (same as before)...
 // Validate all fields
 function validateAll() {
@@ -235,4 +210,19 @@ function validateSkills() {
         return true;
     }
 }
-
+var generateResumeURL = function (username) {
+    var baseURL = "".concat(window.location.origin); // Automatically captures the current domain
+    return "".concat(baseURL, "/resume/").concat(username);
+};
+// Assuming you already have the username when the user submits the form
+var username = document.getElementById('name').value.toLowerCase();
+var resumeURL = generateResumeURL(username);
+// Display the link in the 'resume_url' div
+var resumeURLDiv = document.getElementById('resume_url');
+if (resumeURLDiv) {
+    resumeURLDiv.style.display = 'block'; // Make the div visible
+    resumeURLDiv.innerHTML = "<a href=\"".concat(resumeURL, "\" target=\"_blank\">View Your Resume</a>");
+}
+else {
+    console.error('Resume URL div not found');
+}
